@@ -33,6 +33,8 @@ var (
 	testClusterIntTrafPol = v1core.ServiceInternalTrafficPolicyCluster
 	testNodeIPv4          = "10.1.0.1"
 	testNodeIPv6          = "2001:db8:42:2::1"
+	lbIPModeProxy         = v1core.LoadBalancerIPModeProxy
+	lbIPModeVIP           = v1core.LoadBalancerIPModeVIP
 )
 
 type ServiceAdvertisedIPs struct {
@@ -1060,10 +1062,6 @@ func getLoadBalancerSvc() *v1core.Service {
 	}
 }
 
-func lbIPModePtr(mode v1core.LoadBalancerIPMode) *v1core.LoadBalancerIPMode {
-	return &mode
-}
-
 func getLoadBalancerProxySvc() *v1core.Service {
 	return &v1core.Service{
 		ObjectMeta: metav1.ObjectMeta{
@@ -1080,8 +1078,8 @@ func getLoadBalancerProxySvc() *v1core.Service {
 		Status: v1core.ServiceStatus{
 			LoadBalancer: v1core.LoadBalancerStatus{
 				Ingress: []v1core.LoadBalancerIngress{
-					{IP: "10.0.255.1", IPMode: lbIPModePtr(v1core.LoadBalancerIPModeProxy)},
-					{IP: "10.0.255.2", IPMode: lbIPModePtr(v1core.LoadBalancerIPModeProxy)},
+					{IP: "10.0.255.1", IPMode: &lbIPModeProxy},
+					{IP: "10.0.255.2", IPMode: &lbIPModeProxy},
 				},
 			},
 		},
@@ -1104,8 +1102,8 @@ func getLoadBalancerMixedIPModeSvc() *v1core.Service {
 		Status: v1core.ServiceStatus{
 			LoadBalancer: v1core.LoadBalancerStatus{
 				Ingress: []v1core.LoadBalancerIngress{
-					{IP: "10.0.255.1", IPMode: lbIPModePtr(v1core.LoadBalancerIPModeProxy)},
-					{IP: "10.0.255.2", IPMode: lbIPModePtr(v1core.LoadBalancerIPModeVIP)},
+					{IP: "10.0.255.1", IPMode: &lbIPModeProxy},
+					{IP: "10.0.255.2", IPMode: &lbIPModeVIP},
 				},
 			},
 		},

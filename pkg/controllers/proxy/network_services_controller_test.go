@@ -20,6 +20,11 @@ import (
 	"k8s.io/client-go/kubernetes/fake"
 )
 
+var (
+	lbIPModeProxy = v1core.LoadBalancerIPModeProxy
+	lbIPModeVIP   = v1core.LoadBalancerIPModeVIP
+)
+
 // getServicesFromAddServiceCalls formats ipvsAddService calls as strings for comparison
 func getServicesFromAddServiceCalls(mock *LinuxNetworkingMock) []string {
 	var services []string
@@ -40,11 +45,6 @@ func getEndpointsFromAddServerCalls(mock *LinuxNetworkingMock) []string {
 			svc.Address, svc.Port, dst.Address, dst.Port))
 	}
 	return endpoints
-}
-
-// lbIPModePtr returns a pointer to the given LoadBalancerIPMode value
-func lbIPModePtr(mode v1core.LoadBalancerIPMode) *v1core.LoadBalancerIPMode {
-	return &mode
 }
 
 func TestNetworkServicesController_syncIpvsServices(t *testing.T) {
@@ -205,8 +205,8 @@ func TestNetworkServicesController_syncIpvsServices(t *testing.T) {
 				Status: v1core.ServiceStatus{
 					LoadBalancer: v1core.LoadBalancerStatus{
 						Ingress: []v1core.LoadBalancerIngress{
-							{IP: "10.255.0.1", IPMode: lbIPModePtr(v1core.LoadBalancerIPModeProxy)},
-							{IP: "10.255.0.2", IPMode: lbIPModePtr(v1core.LoadBalancerIPModeProxy)},
+							{IP: "10.255.0.1", IPMode: &lbIPModeProxy},
+							{IP: "10.255.0.2", IPMode: &lbIPModeProxy},
 						},
 					},
 				},
@@ -236,8 +236,8 @@ func TestNetworkServicesController_syncIpvsServices(t *testing.T) {
 				Status: v1core.ServiceStatus{
 					LoadBalancer: v1core.LoadBalancerStatus{
 						Ingress: []v1core.LoadBalancerIngress{
-							{IP: "10.255.0.1", IPMode: lbIPModePtr(v1core.LoadBalancerIPModeProxy)},
-							{IP: "10.255.0.2", IPMode: lbIPModePtr(v1core.LoadBalancerIPModeVIP)},
+							{IP: "10.255.0.1", IPMode: &lbIPModeProxy},
+							{IP: "10.255.0.2", IPMode: &lbIPModeVIP},
 						},
 					},
 				},
